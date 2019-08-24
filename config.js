@@ -1,14 +1,14 @@
 'use strict';
 
 module.exports = {
-  url: 'https://lumen.netlify.com',
+  url: 'https://benlindsay.surge.sh',
   pathPrefix: '/',
-  title: 'Blog by John Doe',
-  subtitle: 'Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu.',
-  copyright: '© All rights reserved.',
-  disqusShortname: '',
+  title: 'Ben Lindsay',
+  subtitle: 'Musings about data science, tech, and whatever else I feel like',
+  copyright: '© 2019 All rights reserved.',
+  disqusShortname: 'benlindsay',
   postsPerPage: 4,
-  googleAnalyticsId: 'UA-73379983-2',
+  googleAnalyticsId: 'UA-71898636-1',
   useKatex: false,
   menu: [
     {
@@ -25,19 +25,19 @@ module.exports = {
     }
   ],
   author: {
-    name: 'John Doe',
+    name: 'Ben Lindsay',
     photo: '/photo.jpg',
-    bio: 'Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu.',
+    bio: 'Data Scientist / Pythonista / Recovering Academic in the Twin Cities area',
     contacts: {
-      email: '',
-      facebook: '#',
-      telegram: '#',
-      twitter: '#',
-      github: '#',
+      email: 'benjlindsay@gmail.com',
+      facebook: '',
+      telegram: '',
+      twitter: 'ben_j_lindsay',
+      github: 'benlindsay',
       rss: '',
       vkontakte: '',
-      linkedin: '#',
-      instagram: '#',
+      linkedin: 'benjlindsay',
+      instagram: '',
       line: '',
       gitlab: '',
       weibo: ''
