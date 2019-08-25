@@ -1,6 +1,6 @@
 ---
 title: "Running Jupyter Lab Remotely"
-date: 2018-04-30 11:19:27
+date: "2018-04-30 11:19:27"
 template: "post"
 slug: "/posts/running-jupyter-lab-remotely"
 category: "Data Science"
