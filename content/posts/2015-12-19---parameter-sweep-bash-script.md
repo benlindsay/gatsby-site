@@ -6,8 +6,8 @@ draft: false
 slug: "/posts/parameter-sweep-bash-script/"
 category: "Projects"
 tags:
-  - "Bash"
-  - "Productivity"
+  - "bash"
+  - "productivity"
 description: "In my polymer field theory research, often my studies involve
 running a bunch of simulations where I pick one or more input parameters and
 change them over a range of values, then compare the results of each separate

@@ -5,11 +5,11 @@ template: "post"
 slug: "/posts/analyzing-larger-than-memory-data-on-your-laptop"
 category: "Data Science"
 tags:
-  - "Python"
-  - "Recommender Systems"
-  - "Dask"
-  - "Pandas"
-  - "Big Data"
+  - "python"
+  - "recommender systems"
+  - "dask"
+  - "pandas"
+  - "big data"
 description: "If you want to run some analysis on a dataset that's just a
 little too big to load into memory on your laptop, but you don't want to
 leave the comfort of using Pandas dataframes in a Jupyter notebook, then Dask

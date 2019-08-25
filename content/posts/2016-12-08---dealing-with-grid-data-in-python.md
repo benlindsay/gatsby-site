@@ -3,10 +3,10 @@ title: "Dealing with Grid Data in Python"
 date: "2016-12-8 16:04"
 template: "post"
 slug: "/posts/dealing-with-grid-data-in-python"
-category: "Miscellaneous"
+category: "Data Science"
 tags: 
-  - "Python"
-  - "NumPy"
+  - "python"
+  - "numpy"
 description: "In my PhD research, I do a lot of analysis of 2D and 3D grid data
 output by simulations I run. In my analyses, it's very helpful to restructure
 these data into a more useable format. A few key lines of python code do the
