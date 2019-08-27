@@ -1,6 +1,6 @@
 ---
 title: "Dealing with Grid Data in Python"
-date: "2016-12-8 16:04"
+date: "2016-12-08"
 template: "post"
 slug: "/posts/dealing-with-grid-data-in-python"
 category: "Data Science"

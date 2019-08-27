@@ -1,6 +1,6 @@
 ---
 title: "Deploying a Cookiecutter Django Site on AWS"
-date: "2019-07-23 11:00:00"
+date: "2019-07-23"
 template: "post"
 slug: "/posts/deploying-a-cookiecutter-django-site-on-aws"
 category: "Web Development"

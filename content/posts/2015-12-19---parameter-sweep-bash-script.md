@@ -1,6 +1,6 @@
 ---
 title: Parameter Sweep Bash Script
-date: "2015-12-19 21:25"
+date: "2015-12-19"
 template: "post"
 draft: false
 slug: "/posts/parameter-sweep-bash-script/"

@@ -1,6 +1,6 @@
 ---
 title: "Interactive D3 Map of Baby Name Popularity"
-date: "2016-07-24 22:00"
+date: "2016-07-24"
 template: "post"
 category: "Projects"
 tags:

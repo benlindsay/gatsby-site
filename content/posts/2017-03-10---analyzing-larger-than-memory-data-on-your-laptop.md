@@ -1,6 +1,6 @@
 ---
 title: "Analyzing Larger-than-Memory Data on your Laptop"
-date: "2017-3-10 19:10"
+date: "2017-03-10"
 template: "post"
 slug: "/posts/analyzing-larger-than-memory-data-on-your-laptop"
 category: "Data Science"
