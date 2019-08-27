@@ -10,7 +10,7 @@ tags:
   - "tmux"
   - "ssh"
   - "productivity"
-description: "I'm a huge fan of [Jupyter Notebooks](http://jupyter.org/), and
+description: "I'm a huge fan of Jupyter Notebooks, and
 I was very excited when I found out about Jupyter Lab, which provides a much
 more comprehensive user experience around Jupyter Notebooks. Here I share how
 to run Jupyter Lab efficiently on a remote machine. I have a research cluster
