@@ -14,11 +14,11 @@ changes over time. Come check it out!"
 ---
 
 <div>
-<iframe width="100%" height="400px" style="border:0px;" src="http://baby-name-map.surge.sh"></iframe>
+<iframe width="100%" height="400px" style="border:0px;" src="https://baby-name-map.surge.sh"></iframe>
 </div>
 
 The map above is an `iframe` of
-[baby-name-map.surge.sh](http://baby-name-map.surge.sh), so the interactivity
+[baby-name-map.surge.sh](https://baby-name-map.surge.sh), so the interactivity
 can be a little laggy. If you follow the link and play with it there, the map
 responds much faster when dragging the Year slider.
 
