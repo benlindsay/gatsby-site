@@ -7,7 +7,7 @@ module.exports = {
   subtitle: 'Musings about data science, tech, and whatever else I feel like',
   copyright: '© 2019 All rights reserved.',
   disqusShortname: 'benlindsay',
-  postsPerPage: 4,
+  postsPerPage: 10,
   googleAnalyticsId: 'UA-71898636-1',
   useKatex: true,
   menu: [
