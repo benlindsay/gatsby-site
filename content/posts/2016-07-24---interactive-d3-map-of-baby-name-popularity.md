@@ -8,7 +8,7 @@ tags:
   - "d3"
   - "data visualization"
 slug: "/posts/interactive-d3-map-of-baby-name-popularity"
-description: "I built an D3 map showing baby name popularity by
+description: "I built a D3 map showing baby name popularity by
 state with an interactive time slider you can use to see how the popularity
 changes over time. Come check it out!"
 ---
