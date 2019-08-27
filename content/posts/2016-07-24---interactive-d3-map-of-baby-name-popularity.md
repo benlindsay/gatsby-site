@@ -20,7 +20,7 @@ changes over time. Come check it out!"
 The map above is an `iframe` of
 [baby-name-map.surge.sh](https://baby-name-map.surge.sh), so the interactivity
 can be a little laggy. If you follow the link and play with it there, the map
-responds much faster when dragging the Year slider.
+might respond faster when dragging the Year slider.
 
 ## Using and Understanding this Map
 
