@@ -101,21 +101,21 @@ module.exports = {
       resolve: 'gatsby-transformer-remark',
       options: {
         plugins: [
-          'gatsby-remark-relative-images',
+          // 'gatsby-remark-relative-images',
           {
             resolve: 'gatsby-remark-katex',
             options: {
               strict: 'ignore'
             }
           },
-          {
-            resolve: 'gatsby-remark-images',
-            options: {
-              maxWidth: 960,
-              withWebp: true,
-              ignoreFileExtensions: [],
-            }
-          },
+          // {
+          //   resolve: 'gatsby-remark-images',
+          //   options: {
+          //     maxWidth: 960,
+          //     withWebp: true,
+          //     ignoreFileExtensions: [],
+          //   }
+          // },
           {
             resolve: 'gatsby-remark-responsive-iframe',
             options: { wrapperStyle: 'margin-bottom: 1.0725rem' }
