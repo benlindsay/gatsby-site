@@ -261,6 +261,49 @@ overfitting better than a damping factor of 0.
 
 ## Similarity-Based Algorithms
 
+*Check out the full notebook for this section
+[here](https://github.com/benlindsay/movielens-analysis/blob/master/03_Similarity-based_CF.ipynb).*
+
+Now that we've established some simple baseline models and demonstrated that
+the Damped User + Movie Baseline model is the best of the few we tested,
+let's move on to some actual collaborative filtering models. Here, we'll
+explore user-based and item-based collaborative filtering.
+
+![Collaborative Filtering Image](/media/collaborativeFiltering-960x540.jpg)
+*Image by [Salem Marafi](http://www.salemmarafi.com/), found at
+[salemmarafi.com](http://www.salemmarafi.com/wp-content/uploads/2014/04/collaborativeFiltering-960x540.jpg)*
+
+The idea of these methods is to predict unseen ratings by looking at
+how similar users rated a particular item, or by looking at how similar items
+were rated by a particular user. Both methods fall under the category of
+K-Nearest Neighbor (KNN) models, since ratings from the $k$ most similar users
+or items are combined for the prediction.
+
+In the notebook linked above, I've implemented a class called
+`KNNRecommender` that can accept a `mode` parameter of either `'user'` or
+`'item'`. In the plot below, I use 5-fold cross-validation to measure the MAE of
+user- and item-based models as a function of $k$. The green band represents the
+mean $\pm$ standard deviation of the best baseline method chosen from the
+previous section.
+
+![KNN k cross validation](/media/movielens-knn-model-k-xval.png)
+
+Here we can see that Item-based collaborative filtering outperforms
+User-based collaborative filtering for all $k$. This occurs for the same
+reason that the Item average baseline performed better than the User average
+baseline: there are generally more ratings per item than there are ratings
+per user, since there are more users than movies. (This reverse is true for
+larger datasets like the [MovieLens 20M
+Dataset](https://grouplens.org/datasets/movielens/20m/) where there are more
+users than movies.)
+
+We also see that the best Item-based CF model occurs around $k=10$ while the
+best User-based CF model occurs around $k=20$. We'll keep these in mind when
+comparing models later.
+
+Next, we'll start looking at matrix factorization methods, beginning with
+Alternating Least Squares.
+
 ## Alternating Least Squares
 
 ## Stochastic Gradient Descent
