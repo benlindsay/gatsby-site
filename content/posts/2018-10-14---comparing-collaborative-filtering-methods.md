@@ -2,7 +2,7 @@
 title: "Comparing Collaborative Filtering Methods"
 date: "2019-10-14"
 template: "post"
-draft: true
+draft: false
 slug: "/posts/comparing-collaborative-filtering-methods"
 category: "Projects"
 tags:
@@ -306,8 +306,266 @@ Alternating Least Squares.
 
 ## Alternating Least Squares
 
+*Check out the full notebook for this section
+[here](https://github.com/benlindsay/movielens-analysis/blob/master/04_ALS.ipynb).*
+
+Previously, I showed how to use similarity-based approaches that guess
+unknown user-movie-rating triplets by looking at either movies with a similar
+rating profile or users with a similar rating profile. These approaches leave
+a lot of data on the table though. Matrix factorization is a way to both take
+into account more data and perform some regularizing dimensionality reduction
+to help deal with the sparsity problem.
+
+The basic idea is to organize the user-movie-rating triplets into a matrix
+with each row representing a user and each column representing a movie. We
+want to approximate this large matrix with a matrix multiplication of 2
+smaller matrices. In the example below, each row of the "User Matrix" has 2
+latent features of that user, and each column of the "Item Matrix" has 2
+latent features of that item. The dot product of any user's latent features
+and item's latent features will give an estimate of the rating that user
+would give that movie.
+
+![Matrix Factorization](/media/matrix-factorization.png)
+*Image by [Soumya Gosh](https://medium.com/@connectwithghosh), found at
+[medium.com](https://medium.com/@connectwithghosh/simple-matrix-factorization-example-on-the-movielens-dataset-using-pyspark-9b7e3f567536)*
+
+There are many variations on this theme and multiple ways to perform this matrix factorization. The method I demonstrate here is called "Alternating Least Squares" method which was designed for the [Netflix Prize](https://www.netflixprize.com/) and described in [this paper](http://www.grappa.univ-lille3.fr/~mary/cours/stats/centrale/reco/paper/MatrixFactorizationALS.pdf). This method works iteratively, with 2 main steps per iteration:
+
+1. Assume the User Matrix is fixed and solve for the Item Matrix
+2. Assume the Item Matrix is fixed and solve for the User Matrix
+
+In the notebook linked above, the full code for the `ALSRecommender` can be
+found.
+
+Since this is an iterative method, I first checked the amount of
+iterations/epochs for an arbitrary number of latent features $k$ before the
+error curves start to plateau:
+
+![ALS Epochs](/media/als-epochs.png)
+
+So it looks like 15 or 20 epochs should be enough for Test Error to start
+plateauing. So now let's stick with 15 epochs and use cross-validation to select
+an optimal $k$:
+
+![ALS k Cross-Validation](/media/als-k-xval.png)
+
+It looks like we have a Test Error minimum around $k=5$, so we'll call that the
+winner for the ALS category.
+
+Great, so now let's move on to a different matrix factorization approach:
+stochastic gradient descent.
+
 ## Stochastic Gradient Descent
+
+*Check out the full notebook for this section
+[here](https://github.com/benlindsay/movielens-analysis/blob/master/05_SGD.ipynb).*
+
+Previously, I showed how to do matrix factorization using Alternating Least
+Squares (ALS). Now we'll attempt to factorize the matrix into the same
+mathematical form, but we'll use a different technique to get there.
+
+Derivation details that give us the update equations we need can be found
+[here](https://blog.insightdatascience.com/explicit-matrix-factorization-als-sgd-and-all-that-jazz-b00e4d9b21ea#d42b).
+I'll just give the start and finish here.
+
+We start with a loss function that looks like this:
+
+$$
+L = \sum_{u,i}(r_{ui} - \hat{r}_{ui})^2
+  + \lambda_{b_u} \sum_u \lVert b_u \lVert^2
+  + \lambda_{b_i} \sum_i \lVert b_i \lVert^2 \\
+  + \lambda_{x_u} \sum_u \lVert \mathbf{x}_u \lVert^2
+  + \lambda_{y_i} \sum_i \lVert \mathbf{y}_i \lVert^2
+$$
+
+The first term is a sum of squared errors on the predicted rating, while all
+the other terms are regularizing penalties on too high of values, tunable by
+the 4 $\lambda$ parameters. $\hat{r}_{ui}$, the predicted rating for user $u$
+on item $i$, is given by
+
+$$
+\hat{r}_{ui} = \mu + b_u + b_i + \mathbf{x}_u^\top \cdot \mathbf{y}_i
+$$
+
+With this setup, we can iterate over ratings, compute the gradient in the
+loss function for that point with respect to each parameter $b_u$, $b_i$,
+$\mathbf{x}_u$, and $\mathbf{y}_i$. As mentioned in the post linked above,
+the final update equations look like this
+
+$$
+b_u^{t+1} = b_u^{t} + \eta (e_{ui} - \lambda_{b_u})b_u \\
+b_i^{t+1} = b_i^{t} + \eta (e_{ui} - \lambda_{b_i})b_i \\
+\mathbf{x}_u^{t+1} = \mathbf{x}_u^{t} + \eta (e_{ui} \mathbf{y}_i - \lambda_{x_u} \mathbf{x}_u) \\
+\mathbf{y}_i^{t+1} = \mathbf{y}_i^{t} + \eta (e_{ui} \mathbf{x}_u - \lambda_{y_i} \mathbf{y}_i) \\
+$$
+
+where $\eta$ is the learning rate (a parameter that controls the speed of
+descent down the gradients) and $e_{ui}$ is the prediction error given by
+$\hat{r}_{ui} - r_{ui}$.
+
+The code for the `SGDRecommender` and the tuning of that model can be found in
+the notebook linked above.
+
+First, just like we did with ALS, let's see how the testing error changes as
+this iterative model progresses:
+
+![SGD Epochs](/media/sgd-epochs.png)
+
+It looks like around 12 is the optimal number of iterations to run before we
+start overfitting, so we'll use that from here on out. Next, just like before,
+let's use cross-validation to find the best $k$:
+
+![SGD k Cross-Validation](/media/sgd-k-xval.png)
+
+Honestly, the fact that training error came back up at $k=50$ probably means I
+didn't use the right amount of iterations/epochs, because training error should
+always go down with increasing model complexity. But my implementation of SGD is
+pretty slow and painful, and I really don't want to rerun this. Using Cython or
+some other method to move the large amount of for looping into the C-layer could
+significantly reduce this pain, but I'm not getting into that right now.
+
+With that caveat in mind, since $k=50$ resulted in the lowest test error, we'll
+declare that the winner of the SGD variants and move on to comparing all the
+models.
 
 ## Algorithm Comparisons
 
+*Check out the full notebook for this section
+[here](https://github.com/benlindsay/movielens-analysis/blob/master/06_Model-Comparisons.ipynb).*
+
+Now that I've implemented 3 main classes of collaborative filtering methods
+(similarity-based, alternating least squares (ALS), and stochastic gradient
+descent (SGD)), it's time to see how they stack up to each other.
+
+To compare models, I'll use 2 different metrics: mean absolute error (MAE)
+and normalized discounted cumulative gain (NDCG). MAE measures about how many
+stars off all the predictions are on average. This is useful information, but
+in most recommendation situations, the user will only see a few of the top
+recommendations given to them. The NDCG score tells us how "good" the top few
+recommendations are, with decreasing weight given the farther you go down the
+list.
+
+Usually, NDCG will be reported for a certain number of recommendations. If we
+just care about the first 3 recommendations, we would compute NDCG@3. If
+there were no movies that the user would have rated more highly than these 3,
+then NDCG@3 is 1.0. Lower values mean other movies would have gotten higher
+ratings.
+
+If you're interested, the math looks like this:
+
+Given a vector $\mathbf{r}$ of $k$ recommendations from most to least recommended, discounted cumulative gain (DCG) is given by:
+
+$$DCG@k = \sum_{i=1}^k \frac{r_i}{\log_2(i+1)}$$
+
+Normalized DCG (NDCG) is DCG divided by the maximum possible DCG:
+
+$$ NDCG@k = \frac{DCG@k}{\max_{\mathbf{r}} DCG@k}$$
+
+First let's choose the best User-based model:
+
+![MAE and NDCG for User-based](/media/mae-ndcg-user-k-xval.png)
+
+NDCG@3 peaks at k=50, and MAE is pretty similar between k=20 to 100, so k=50
+is the winner. Now let's do the same thing for an item-based recommender:
+
+![MAE and NDCG for Item-based](/media/mae-ndcg-item-k-xval.png)
+
+Here, $k=10$ and $k=20$ have similar MAE and NDCG@3, we'll favor higher $k$
+in nearest neigbor methods because higher $k$ is less prone to overfitting.
+$k=20$ is the winner of the item-based models.
+
+Now with the iterative ALS and SGD models, we haven't yet seen how NDCG@3
+changes over time, so we need to examine that first before doing tuning the $k$ parameter.
+
+![MAE and NDCG vs Epoch for ALS-based](/media/mae-ndcg-als-epochs.png)
+
+15 epochs still looks good for ALS, so let's do our $k$ tuning, sticking with 15
+iterations:
+
+![MAE and NDCG vs k for ALS-based](/media/mae-ndcg-als-k-xval.png)
+
+Here, it looks like MAE is pretty flat with respect to the learning rate
+$\lambda$, but NDCG@3 shows some interesting variations. The highest NDCG@3
+comes from $\lambda=0.1$ and $k>=50$. With matrix factorization methods like
+ALS, we want to favor lower $k$ for better generalizability, so $\lambda=0.1$
+and $k=50$ is the winner of the ALS category.
+
+How does NDCG@3 change over time with the SGD model?
+
+![MAE and NDCG vs Epoch for SGD-based](/media/mae-ndcg-sgd-epochs.png)
+
+Oof, looks like we're going to need more than 15 epochs to get both the MAE and
+NDCG@3 to plateau, but I'm not redoing that plot because time is money and my
+slow implementation of SGD is sure costing a lot of time. I'll ramp up to 30
+iterations for model tuning hope that's good enough. Now with SGD there are a
+lot more parameters you could tune. For the sake of time, we'll stick with
+$k=50$ based on the ALS results, and tune the learning rate ($\eta$) and
+regularization parameters ($\lambda_*$). We're going to further simplify
+things by forcing all the regularization parameters to be equal and call them
+$\lambda$, i.e.
+
+$$\lambda_{b_u}=\lambda_{b_i}=\lambda_{x_u}=\lambda_{y_i}=\lambda$$
+
+Here's are the errors and NDCG@3 as a function of $\lambda$ and $\eta$:
+
+![MAE and NDCG for SGD model tuning](/media/mae-ndcg-sgd-lambda-xval.png)
+
+$\lambda=\eta=0.01$ gives the best combination of MAE and NDCG@3, so that
+combination is the winner for SGD.
+
+![Model Comparison](/media/movielens-model-comparison.png)
+
+There's a lot of information in the 3 charts above. The charts show 3
+different metrics (Mean Absolute Error, Normalized Discounted Cumulative
+Gain, and time) for the best user-based, item-based, ALS, and SGD models I
+found. Each metric/model combination has 3 points, representing the values
+for each of the 3 folds used for cross-validation.
+
+The MAE doesn't seem to change much across the different models, although the
+variance seems to be slightly smaller for the matrix factorization methods
+(ALS and SGD) compared to the nearest neighbors methods (user-based and
+item-based).
+
+The NDCG@3 does seem to vary across the different models though, with the
+highest score going to the ALS model. NDCG@3 is arguably the more useful
+metric for a recommender system, so as long as very high speeds aren't
+important, ALS wins here.
+
+If this ALS model is too slow for a particular application, the item-based
+method would be the next choice. Both user- and item-based recommenders have
+similarly fast training speeds, with item-based having a slightly higher
+NDCG@3 score. The slower execution of the ALS and SGD models are likely
+related to the number of iterations over for loops required in each
+iteration.
+
+As they are right now, my user- and item-based models don't need any python
+for loops during training. ALS has $n_{users} + n_{movies}$ python for loop
+iterations per epoch, and SGD has $n_{ratings}$ iterations per epoch, which
+is about an order of magnitude higher. I specify "python" for loops, because
+the vectorized operations used in user-based, item-based, and ALS models have
+for loops in c which are much faster than those in python. By optimizing code
+with something like cython or numba, I could certainly drop the training time
+for ALS and SGD.
+
 ## Recommender System Prototype
+
+If you want to play with these models interactively, check out [my
+recommender
+notebook](https://github.com/benlindsay/movielens-analysis/blob/master/07_Recommender.ipynb).
+With this notebook, you could choose whichever user you want, show some of
+their favorite movies, then display the top recommendations given by any of
+these 4 models.
+
+Below is a screenshot of what you'll see if you use this notebook. You input a
+user id (user 30 in this case), and the notebook displays posters of 5 of that
+user's most highly rated movies. You choose a model (`'als'` in this case--other
+options are `'user'`, `'item'`, or `'sgd'`), and the notebook takes a little
+time to compute, then displays the 3 movies the model most strongly recommends
+that user should watch. It's not perfect, and I haven't really verified that the
+results make sense, but it does something, so enjoy, and feel free to ask any
+questions below.
+
+![Movies the input user likes](/media/movielens-prototype-liked-movies.png)
+
+![Movies the system
+recommends](/media/movielens-prototype-recommended-movies.png)
