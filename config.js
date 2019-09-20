@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  url: 'https://benlindsay.surge.sh',
+  url: 'https://benjlindsay.com',
   pathPrefix: '/',
   title: 'Ben Lindsay',
   subtitle: 'Musings about data science, tech, and whatever else I feel like',
