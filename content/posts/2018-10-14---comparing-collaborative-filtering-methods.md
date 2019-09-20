@@ -62,7 +62,7 @@ What does the ratings distribution look like?
 
 It's a little skewed to the positive side, with 4 being the most common rating.
 I guess that skew makes sense because people are more likely to watch stuff they
-would like than garbage they would hate.
+would like than stuff they would hate.
 
 Next: how consistent are the ratings over time? If people as a whole get more
 positive or negative over time, that could complicate things. If their behavior
